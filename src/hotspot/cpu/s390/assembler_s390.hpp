@@ -638,6 +638,11 @@ class Assembler : public AbstractAssembler {
 #define LCDBR_ZOPC  (unsigned  int)(179 << 24 | 19 << 16)
 #define LCXBR_ZOPC  (unsigned  int)(179 << 24 | 67 << 16)
 
+ // Load Halfword Immediate on Condition
+ #define LOCHI_ZOPC   (unsigned int)(0xECL << 40 | 0x42L)
+ #define LOCHHI_ZOPC  (unsigned int)(0xECL << 40 | 0x4EL)
+ #define LOCGHI_ZOPC  (unsigned int)(0xECL << 40 | 0x46L)
+
 // Add
 // RR, signed
 #define AR_ZOPC     (unsigned  int)(26 << 8)
@@ -2065,6 +2070,11 @@ class Assembler : public AbstractAssembler {
   inline void z_llihl(Register r1, int64_t i2);                 // r1 = i2_imm16    ; uint64 <- (uint16<<32)
   inline void z_llilh(Register r1, int64_t i2);                 // r1 = i2_imm16    ; uint64 <- (uint16<<16)
   inline void z_llill(Register r1, int64_t i2);                 // r1 = i2_imm16    ; uint64 <- uint16
+
+  // load halfword immediate on condition
+  inline void z_lochi(Register r1, int64_t i2, branch_condition m3);   // load immediate r1[32-64] = i2_imm16   ; int32 <- int16
+  inline void z_lochhi(Register r1, int64_t i2, branch_condition m3);  // load immediate r1[ 0-31] = i2_imm16   ; int32 <- int16
+  inline void z_locghi(Register r1, int64_t i2, branch_condition m3);  // load immediate r1[ 0-63] = i2_imm16   ; int64 <- int16
 
   // insert immediate
   inline void z_ic(  Register r1, int64_t d2, Register x2, Register b2); // insert character

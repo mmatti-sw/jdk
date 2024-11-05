@@ -3276,6 +3276,10 @@ void MacroAssembler::lookup_secondary_supers_table(Register r_sub_klass,
 
   bind(L_failure);
   // TODO: use load immediate on condition and z_bru above will not be required
+  // stop
+  // stop("Branch on condition");
+  // load r1
+  // cmp r1, r1
   z_lghi(r_result, 1);
 
   bind(L_done);
@@ -6280,6 +6284,10 @@ void MacroAssembler::compiler_fast_unlock_lightweight_object(Register obj, Regis
   const int mark_offset        = oopDesc::mark_offset_in_bytes();
   const ByteSize ls_top_offset = JavaThread::lock_stack_top_offset();
 
+/*
+ * TODO: Code added to test load immediate on condition here */
+  int fubar;
+
   BLOCK_COMMENT("compiler_fast_lightweight_unlock {");
   { // Lightweight Unlock
     NearLabel push_and_slow_path;
@@ -6291,6 +6299,20 @@ void MacroAssembler::compiler_fast_unlock_lightweight_object(Register obj, Regis
     z_cg(obj, Address(Z_thread, top));
     branch_optimized(bcondNotEqual, inflated_load_monitor);
 
+  BLOCK_COMMENT("load_imm_on_condition {");
+  {
+	  //load_const_optimized(Z_R1, (uintptr_t) &fubar);
+	  //z_agsi(0, Z_R1, 1);
+	  z_ltgr(obj, obj); // test ag 0; -> NE; 
+	  z_lochi(Z_R1, 10,Assembler::bcondNotEqual ); 
+	  z_cghi(Z_R1, 10);  // EQ 
+	  Label safe;
+	  z_bre(safe); 
+	  stop("stop"); 
+	  
+	  bind(safe);
+  }
+  BLOCK_COMMENT("} load_imm_on_condition");
     // Pop lock-stack.
 #ifdef ASSERT
     const Register temp_top = tmp1; // let's not kill top here, we can use for recursive check
